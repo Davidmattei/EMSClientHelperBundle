@@ -29,6 +29,10 @@ class EMSClientHelperExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        if ($config['sync']) {
+            $loader->load('sync.xml');
+        }
+
         $container->setParameter('emsch.locales', $config['locales']);
         $container->setParameter('emsch.bind_locale', $config['bind_locale'] ?? true);
         $container->setParameter('emsch.etag_hash_algo', $config['etag_hash_algo'] ?? 'sha1');

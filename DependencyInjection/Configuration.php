@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->booleanNode('sync')->defaultFalse()->end()
                 ->arrayNode('log')
                     ->children()
                         ->scalarNode('instance_id')->end()
