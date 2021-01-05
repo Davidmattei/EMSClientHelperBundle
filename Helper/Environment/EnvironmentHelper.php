@@ -80,12 +80,7 @@ class EnvironmentHelper
 
     public function getEnvironment(): Environment
     {
-        $current = $this->requestStack->getCurrentRequest();
-        if (null === $current) {
-            throw new EnvironmentNotFoundException();
-        }
-        $environmentName = $this->getEnvironmentName();
-        if (null === $environmentName) {
+        if (null === $environmentName = $this->getEnvironmentName()) {
             throw new EnvironmentNotFoundException();
         }
 

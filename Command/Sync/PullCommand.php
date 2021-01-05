@@ -39,6 +39,8 @@ final class PullCommand extends Command implements CommandInterface
     {
         $this->style->title('Sync - pull');
 
+        $this->pullService->dumpTranslations();
+
         return 1;
     }
 }

@@ -7,11 +7,12 @@
     <services>
         <defaults public="false" />
         <service id="emsch.command.sync.pull" class="EMS\ClientHelperBundle\Command\Sync\PullCommand">
-            <argument type="service" id="emsch.sync.pull_helper" />
+            <argument type="service" id="emsch.helper.sync.pull" />
             <tag name="console.command" />
         </service>
 
-        <service id="emsch.sync.pull_helper" class="EMS\ClientHelperBundle\Helper\Sync\PullHelper">
+        <service id="emsch.helper.sync.pull" class="EMS\ClientHelperBundle\Helper\Sync\PullHelper">
+            <argument type="service" id="emsch.helper.translation" />
         </service>
     </services>
 </container>

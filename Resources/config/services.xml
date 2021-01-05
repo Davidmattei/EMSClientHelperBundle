@@ -38,12 +38,16 @@
             <argument type="string">%emsch.etag_hash_algo%</argument>
         </service>
 
-        <service id="emsch.helper_translation" class="EMS\ClientHelperBundle\Helper\Translation\TranslationHelper">
-            <argument type="service" id="emsch.manager.client_request" />
+        <service id="emsch.helper.translation" class="EMS\ClientHelperBundle\Helper\Translation\TranslationHelper">
             <argument type="service" id="translator.default" />
+            <argument type="service" id="emsch.helper.translation.builder" />
+            <tag name="kernel.cache_warmer" />
+        </service>
+
+        <service id="emsch.helper.translation.builder" class="EMS\ClientHelperBundle\Helper\Translation\TranslationBuilder">
+            <argument type="service" id="emsch.manager.client_request" />
             <argument type="service" id="emsch.helper_cache" />
             <argument type="string">%emsch.locales%</argument>
-            <tag name="kernel.cache_warmer" />
         </service>
 
         <service id="emsch.helper_hashcash" class="EMS\ClientHelperBundle\Helper\Hashcash\HashcashHelper">
@@ -53,7 +57,7 @@
         <!-- event listeners -->
         <service id="emsch.kernel_listener" class="EMS\ClientHelperBundle\EventListener\KernelListener">
             <argument type="service" id="emsch.helper_environment"/>
-            <argument type="service" id="emsch.helper_translation" />
+            <argument type="service" id="emsch.helper.translation" />
             <argument type="service" id="emsch.helper_locale" />
             <argument type="service" id="emsch.helper_exception" />
             <argument type="string">%emsch.bind_locale%</argument>

@@ -85,7 +85,7 @@ class KernelListener implements EventSubscriberInterface
     public function loadTranslations(KernelEvent $event): void
     {
         if ($event->isMasterRequest()) {
-            $this->translationHelper->addCatalogues();
+            $this->translationHelper->load();
         }
     }
 

@@ -806,41 +806,6 @@ parameters:
 			path: Helper/Routing/Url/Transformer.php
 
 		-
-			message: "#^Property EMS\\\\ClientHelperBundle\\\\Helper\\\\Translation\\\\TranslationHelper\\:\\:\\$locales type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Method EMS\\\\ClientHelperBundle\\\\Helper\\\\Translation\\\\TranslationHelper\\:\\:__construct\\(\\) has parameter \\$locales with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Method EMS\\\\ClientHelperBundle\\\\Helper\\\\Translation\\\\TranslationHelper\\:\\:getMessages\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$item of method EMS\\\\ClientHelperBundle\\\\Helper\\\\Cache\\\\CacheHelper\\:\\:isValid\\(\\) expects Symfony\\\\Component\\\\Cache\\\\CacheItem, Psr\\\\Cache\\\\CacheItemInterface\\|null given\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$item of method EMS\\\\ClientHelperBundle\\\\Helper\\\\Cache\\\\CacheHelper\\:\\:getData\\(\\) expects Symfony\\\\Component\\\\Cache\\\\CacheItem, Psr\\\\Cache\\\\CacheItemInterface\\|null given\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Parameter \\#1 \\$item of method EMS\\\\ClientHelperBundle\\\\Helper\\\\Cache\\\\CacheHelper\\:\\:save\\(\\) expects Symfony\\\\Component\\\\Cache\\\\CacheItem, Psr\\\\Cache\\\\CacheItemInterface\\|null given\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
-			message: "#^Method EMS\\\\ClientHelperBundle\\\\Helper\\\\Translation\\\\TranslationHelper\\:\\:createMessages\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Helper/Translation/TranslationHelper.php
-
-		-
 			message: "#^Property EMS\\\\ClientHelperBundle\\\\Helper\\\\Twig\\\\TwigLoader\\:\\:\\$config type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Helper/Twig/TwigLoader.php
