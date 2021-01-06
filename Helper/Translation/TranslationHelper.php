@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\ClientHelperBundle\Helper\Translation;
 
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Symfony\Component\Translation\Dumper\YamlFileDumper;
-use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\TranslatorBagInterface;
 
-class TranslationHelper
+final class TranslationHelper implements CacheWarmerInterface
 {
     /** @var TranslatorBagInterface */
     private $translator;
@@ -23,21 +25,16 @@ class TranslationHelper
     {
         $dumper = new YamlFileDumper('yaml');
 
-        foreach ($this->translationBuilder->build() as $collection) {
-            $catalogue = new MessageCatalogue($collection->getLocale());
-            $catalogue->add($collection->getMessages(), $collection->getDomain());
-
-            $dumper->dump($catalogue, ['path' => 'translations', 'as_tree' => true]);
+        foreach ($this->translationBuilder->build() as $messageCatalogue) {
+            $dumper->dump($messageCatalogue, ['path' => 'translations', 'as_tree' => true, 'inline' => 5]);
         }
     }
 
     public function load(): void
     {
-        foreach ($this->translationBuilder->build() as $collection) {
-            $catalogue = $this->translator->getCatalogue($collection->getLocale());
-            $filteredCollection = $collection->filterExistingMessages($catalogue);
-
-            $catalogue->add($filteredCollection->getMessages(), $filteredCollection->getDomain());
+        foreach ($this->translationBuilder->build() as $messageCatalogue) {
+            $catalogue = $this->translator->getCatalogue($messageCatalogue->getLocale());
+            $catalogue->addCatalogue($messageCatalogue);
         }
     }
 
@@ -46,11 +43,13 @@ class TranslationHelper
         return false;
     }
 
-    public function warmUp(): void
+    public function warmUp($cacheDirectory)
     {
         try {
             $this->load();
         } catch (\Throwable $e) {
         }
+
+        return [];
     }
 }

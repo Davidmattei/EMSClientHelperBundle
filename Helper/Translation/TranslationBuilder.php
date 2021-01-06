@@ -7,6 +7,8 @@ namespace EMS\ClientHelperBundle\Helper\Translation;
 use EMS\ClientHelperBundle\Helper\Cache\CacheHelper;
 use EMS\ClientHelperBundle\Helper\Elasticsearch\ClientRequest;
 use EMS\ClientHelperBundle\Helper\Elasticsearch\ClientRequestManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Translation\MessageCatalogue;
 
 final class TranslationBuilder
 {
@@ -14,6 +16,8 @@ final class TranslationBuilder
     private $cache;
     /** @var string[] */
     private $locales;
+    /** @var LoggerInterface */
+    private $logger;
     /** @var ClientRequestManager */
     private $manager;
 
@@ -24,6 +28,7 @@ final class TranslationBuilder
     {
         $this->cache = $cache;
         $this->locales = $locales;
+        $this->logger = $manager->getLogger();
         $this->manager = $manager;
         $this->locales = $locales;
     }
@@ -37,7 +42,7 @@ final class TranslationBuilder
     }
 
     /**
-     * @return \Generator|TranslationCollection[]
+     * @return \Generator|MessageCatalogue[]
      */
     public function build(): \Generator
     {
@@ -53,7 +58,10 @@ final class TranslationBuilder
             $translationDomain = $clientRequest->getCacheKey();
 
             foreach ($this->getMessages($clientRequest) as $locale => $messages) {
-                yield new TranslationCollection($translationDomain, $locale, $messages);
+                $messageCatalogue = new MessageCatalogue($locale);
+                $messageCatalogue->add($messages, $translationDomain);
+
+                yield $messageCatalogue;
             }
         }
     }
@@ -67,13 +75,13 @@ final class TranslationBuilder
         $lastChanged = $clientRequest->getLastChangeDate($this->getTranslationContentType($clientRequest));
 
         if ($cacheItem && $this->cache->isValid($cacheItem, $lastChanged)) {
-            $messages = $this->cache->getData($cacheItem);
-        } else {
-            $messages = $this->createMessages($clientRequest);
+            return $this->cache->getData($cacheItem);
+        }
 
-            if ($cacheItem) {
-                $this->cache->save($cacheItem, $messages);
-            }
+        $messages = $this->createMessages($clientRequest);
+
+        if ($cacheItem) {
+            $this->cache->save($cacheItem, $messages);
         }
 
         return $messages;
@@ -97,12 +105,15 @@ final class TranslationBuilder
     {
         $messages = [];
 
-        $scroll = $clientRequest->scrollAll([
-            'size' => 100,
-            'type' => $this->getTranslationContentType($clientRequest),
-        ], '5s');
+        $contentType = $this->getTranslationContentType($clientRequest);
+        $search = $clientRequest->search($contentType, ['sort' => ['key']], 0, 4000);
 
-        foreach ($scroll as $hit) {
+        $total = $search['hits']['total']['value'] ?? $search['hits']['total'];
+        if ($total > 4000) {
+            $this->logger->error('Only the first 4000 routes have been loaded on a total of {total}', ['total' => $total]);
+        }
+
+        foreach ($search['hits']['hits'] as $hit) {
             foreach ($this->locales as $locale) {
                 if (isset($hit['_source']['label_'.$locale])) {
                     $messages[$locale][(string) $hit['_source']['key']] = (string) $hit['_source']['label_'.$locale];
